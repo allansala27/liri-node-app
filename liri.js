@@ -8,11 +8,39 @@ var twitterKeys = keysFile.twitterKeys;
 var argument = process.argv[2];
 
 if(argument === "my-tweets") {
-	//do this
+	var Twitter = require('twitter'); 
+	var client = new Twitter(twitterKeys);
+	var twitterAccount = process.argv[3];
+	var params = {screen_name: twitterAccount};
+	client.get('statuses/user_timeline', params, function(error, tweets, response) {
+		if (tweets.length < 20) {
+    		for (var i = 0; (i < tweets.length); i++) {
+    			console.log("Tweet: " + tweets[i].text);
+    			console.log("	-" + tweets[i].created_at);
+    			console.log("---------------------------------------------------------------")
+    		}
+    	}
+    	else {
+    		for (var i = 0; (i < 20); i++) {
+    			console.log("Tweet: " + tweets[i].text);
+    			console.log("	-" + tweets[i].created_at);
+    			console.log("---------------------------------------------------------------")
+    		}
+    	}
+	});
 }
 
 if(argument === "spotify-this-song") {
-	//do this
+	var spotify = require('spotify');
+	var song = process.argv.splice(3);
+	spotify.search({ type: 'track', query: song }, function(err, data) {
+    	var artist = data.tracks.items[0].album.artists[0].name;
+    	var album = data.tracks.items[0].album.name;
+    	console.log("Artist(s): " + artist);
+    	console.log("Song: " + data.tracks.items[0].name);
+    	console.log("Preview: " + data.tracks.items[0].preview_url);
+    	console.log("Album: "+ album);
+	});
 }
 
 if(argument === "movie-this") {
@@ -33,6 +61,9 @@ if(argument === "movie-this") {
 	});
 }
 
-if(argument === "do-what-it-says"){
-	//do this
+if(argument === "do-what-it-says") {
+	var fs = require("fs");
+	fs.readFile("random.txt", "utf8", function(error, data) {
+		console.log("node liri.js do-what-it-says " + data);
+	});
 }
